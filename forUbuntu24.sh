@@ -38,7 +38,14 @@ sudo chmod 600 /swapfile
 ls -hl /swapfile
 sudo mkswap /swapfile
 sudo swapon /swapfile
-echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+
+# Ensure fstab entry is updated correctly
+if ! grep -q "/swapfile" /etc/fstab; then
+    echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+else
+    echo "Swap entry already exists in /etc/fstab"
+fi
+
 echo "Setting vm.swappiness."
-sudo sysctl vm.swappiness=60
+sysctl vm.swappiness=60
 echo "Bye Bye $username process complete"
