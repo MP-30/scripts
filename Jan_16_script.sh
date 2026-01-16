@@ -25,7 +25,7 @@ usage() {
 }
 
 get_pid() {
-    local INPUT=$1
+    INPUT=$1
     if [[ "$INPUT" =~ ^[0-9]+$ ]]; then
         
         if kill -0 "$INPUT" 2>/dev/null; then
@@ -35,9 +35,9 @@ get_pid() {
         fi
     else
         
-        local FOUND_PID=$(pgrep -f -o "$INPUT")
-        if [ -n "$FOUND_PID" ]; then
-            echo "$FOUND_PID"
+        FOUND_PID_NAME=$(pgrep -p "$INPUT")
+        if [ -n "$FOUND_PID_NAME" ]; then
+            echo "$FOUND_PID_NAME"
         else
             return 1
         fi
@@ -45,16 +45,16 @@ get_pid() {
 }
 
 get_memory_usage() {
-    local PID=$1
+    PID=$1
     
     local RSS_KB=$(ps -o rss= -p "$PID" | tr -d ' ')
     if [ -z "$RSS_KB" ]; then echo 0; else echo "$((RSS_KB / 1024))"; fi
 }
 
 collect_diagnostics() {
-    local PID=$1
-    local STAMP=$(date '+%Y%m%d_%H%M%S')
-    local SESSION_DIR="${ARTIFACT_DIR}/leak_evidince_${STAMP}_pid${PID}"
+    PID=$1
+    STAMP=$(date '+%Y%m%d_%H%M%S')
+    SESSION_DIR="${ARTIFACT_DIR}/leak_evidince_${STAMP}_pid${PID}"
     
     mkdir -p "$SESSION_DIR"
     log_message "Collecting diagnostics into $SESSION_DIR"
