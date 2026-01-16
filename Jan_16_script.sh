@@ -10,7 +10,7 @@ LOG_FILE="leak_monitor.log"
 
 log_message() {
     local MESSAGE="$1"
-    local TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
+    local TIMESTAMP=$(date '+%Y-%m-%d')
     echo "[$TIMESTAMP] $MESSAGE" | tee -a "$LOG_FILE"
 }
 
@@ -27,14 +27,14 @@ usage() {
 get_pid() {
     local INPUT=$1
     if [[ "$INPUT" =~ ^[0-9]+$ ]]; then
-        # Input is a PID
+        
         if kill -0 "$INPUT" 2>/dev/null; then
             echo "$INPUT"
         else
             return 1
         fi
     else
-        # Input is a name
+        
         local FOUND_PID=$(pgrep -f -o "$INPUT")
         if [ -n "$FOUND_PID" ]; then
             echo "$FOUND_PID"
